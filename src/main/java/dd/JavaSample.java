@@ -1,45 +1,47 @@
 package dd;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Platform;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
+import java.net.MalformedURLException;
 import java.net.URL;
+import static org.junit.Assert.assertEquals;
 
 public class JavaSample {
-
+    static WebDriver driver;
     public static final String USERNAME = "ilianavajarova1";
     public static final String AUTOMATE_KEY = "anQesbpRtAnE2aYhxQxd";
     public static final String URL = "https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub";
 
-    public static void main(String[] args) throws Exception {
-
+    @BeforeClass
+    public static void setupTest() throws MalformedURLException {
+        //Desired Capabilities
         DesiredCapabilities caps = new DesiredCapabilities();
-        //caps.setCapability("device", "iPhone 8");
-        //caps.setCapability("realMobile", "true");
-        //caps.setCapability("os_version", "11.0");
         caps.setCapability("browser", "Chrome");
-        caps.setCapability("browser_version", "62.0");
+        caps.setCapability("browser_version", "47.0");
         caps.setCapability("os", "Windows");
-        caps.setCapability("os_version", "10");
-        caps.setCapability("resolution", "1920x1080");
-
+        caps.setCapability("os_version", "7");
+        caps.setCapability("resolution", "1024x768");
         caps.setCapability("browserstack.debug", "true");
+        caps.setCapability("smoke_test", "nike_staging_gBuilder");
+        driver = new RemoteWebDriver(new URL(URL), caps);
+    }
 
-        WebDriver driver = new RemoteWebDriver(new URL(URL), caps);
-        driver.get("http://www.embodee.com");
-        WebElement element = driver.findElement(By.name("q"));
+    @Test
+    public void BrowserStackTest() {
+        //Go to www.swtestacademy.com
+        driver.get("http://www.swtestacademy.com/");
 
-        element.sendKeys("Embodee");
-        element.submit();
+        //Check title is correct
+        assertEquals("Title is not correct!", "Software Test Academy", driver.getTitle());
+    }
 
-        System.out.println(driver.getTitle());
+
+    @AfterClass
+    public static void quitDriver(){
         driver.quit();
-
     }
 }
